@@ -1,21 +1,26 @@
 from dolfin import *
 
-mesh = UnitSquareMesh(6, 4)
+mesh = UnitSquareMesh(20, 20)
 V = FunctionSpace(mesh, "CG", 1)
-g = Expression("1 + x[0]*x[0] + 2*x[1]*x[1]", degree=2)
 
-def g_boundary(x, on_boundary):
-  return on_boundary
+k = Constant(1.0)
+r = Constant(0.1) 
+f = Constant(1.0)
+g_value = 0.0
 
-bc = DirichletBC(V, g, g_boundary)
 u = TrialFunction(V)
 v = TestFunction(V)
-f = Constant(-6.0)
-a = inner(grad(u), grad(v)) * dx
-L = f * v * dx
+
+def g_boundary(x, on_boundary):
+    return on_boundary and near(x[1], 0.0)
+
+bc = DirichletBC(V, Constant(g_value), g_boundary)
+
+a = k * inner(grad(u), grad(v)) * dx + r * u * v * dx + u * v * ds
+L = f * v * dx + 0.1 * v * ds
+
 u = Function(V)
 solve(a == L, u, bc)
-file = File("mesh.pvd")
-file << mesh
-file2 = File("poisson.pvd")
-file2 << u
+
+file = File("diffusion_reaction.pvd")
+file << u
