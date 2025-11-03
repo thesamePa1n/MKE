@@ -2,7 +2,7 @@ from dolfin import *
 
 mesh = Mesh('mesh.xml') 
 domains = MeshFunction('size_t', mesh, 'mesh_physical_region.xml') 
-boundaries = MeshFunction ('size_t', mesh, 'mesh_facet_region.xml') 
+boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml') 
 
 V = FunctionSpace(mesh, 'Lagrange', 1) 
 
