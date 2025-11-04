@@ -23,18 +23,18 @@ bcs = [bc_1, bc_2]
 u0_val = Constant(5.0)
 u0 = interpolate(u0_val, V)
 
-k_1 = Constant(1) 
-k_2 = Constant(420)
-k_3 = Constant(100)
-k_4 = Constant(800)
+k_1 = Constant(20) 
+k_2 = Constant(25)
+k_3 = Constant(15)
+k_4 = Constant(1)
 
 C_1 = Constant(150)
-C_2 = Constant(100)
-C_3 = Constant(200)
-C_4 = Constant(250)
+C_2 = Constant(200)
+C_3 = Constant(250)
+C_4 = Constant(100)
 
 T = 60.0
-N = 100
+N = 10
 tau = T / N
 
 u = TrialFunction(V) 
