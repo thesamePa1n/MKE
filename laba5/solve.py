@@ -33,23 +33,23 @@ g_T = Constant(0.0)
 k = Constant(0.1)
 
 bc_1_1 = DirichletBC(V1, g_L, boundaries1, 1)
-bc_2_1 = DirichletBC(V1, g_B, boundaries1, 3)
-bc_3_1 = DirichletBC(V1, g_T, boundaries1, 4)
+bc_2_1 = DirichletBC(V1, g_T, boundaries1, 3)
+bc_3_1 = DirichletBC(V1, g_B, boundaries1, 4)
 bcs1 = [bc_1_1, bc_2_1, bc_3_1]
 
 bc_1_2 = DirichletBC(V2, g_L, boundaries2, 1)
-bc_2_2 = DirichletBC(V2, g_B, boundaries2, 3)
-bc_3_2 = DirichletBC(V2, g_T, boundaries2, 4)
+bc_2_2 = DirichletBC(V2, g_T, boundaries2, 3)
+bc_3_2 = DirichletBC(V2, g_B, boundaries2, 4)
 bcs2 = [bc_1_2, bc_2_2, bc_3_2]
 
 bc_1_3 = DirichletBC(V3, g_L, boundaries3, 1)
-bc_2_3 = DirichletBC(V3, g_B, boundaries3, 3)
-bc_3_3 = DirichletBC(V3, g_T, boundaries3, 4)
+bc_2_3 = DirichletBC(V3, g_T, boundaries3, 3)
+bc_3_3 = DirichletBC(V3, g_B, boundaries3, 4)
 bcs3 = [bc_1_3, bc_2_3, bc_3_3]
 
 bc_1_4 = DirichletBC(V4, g_L, boundaries4, 1)
-bc_2_4 = DirichletBC(V4, g_B, boundaries4, 3)
-bc_3_4 = DirichletBC(V4, g_T, boundaries4, 4)
+bc_2_4 = DirichletBC(V4, g_T, boundaries4, 3)
+bc_3_4 = DirichletBC(V4, g_B, boundaries4, 4)
 bcs4 = [bc_1_4, bc_2_4, bc_3_4]
 
 u0_val = Constant(5.0)
@@ -114,39 +114,37 @@ while t < T:
     u0_4.assign(u4)
 
     if (cnt % 10 == 0 and cnt != 0):
-        u_e1 = interpolate(u4, V1)
-        u_e2 = interpolate(u4, V2)
-        u_e3 = interpolate(u4, V3)
+        u_e1 = interpolate(u1, V4)
+        u_e2 = interpolate(u2, V4)
+        u_e3 = interpolate(u3, V4)
         
-        E1 = (u_e1 - u1)*dx1
-        E2 = (u_e2 - u2)*dx2
-        E3 = (u_e3 - u3)*dx3
+        E1 = (u_e1 - u4)*dx4
+        E2 = (u_e2 - u4)*dx4
+        E3 = (u_e3 - u4)*dx4
         E1_error1 = abs(assemble(E1))*100
         E1_error2 = abs(assemble(E2))*100
         E1_error3 = abs(assemble(E3))*100
+        print()
         print(f"abs_error: E1_error1={E1_error1}%, E1_error2={E1_error2}%, E1_error3={E1_error3}%")
         
-        EL2_t1 = inner(u1 - u_e1, u1 - u_e1) * dx1
-        EL2_t2 = inner(u2 - u_e2, u2 - u_e2) * dx2
-        EL2_t3 = inner(u3 - u_e3, u3 - u_e3) * dx3
-        EL2_b1 = inner(u1, u1) * dx1
-        EL2_b2 = inner(u2, u2) * dx2
-        EL2_b3 = inner(u3, u3) * dx3
-        EL2_error1 = sqrt(abs(assemble(EL2_t1)) / abs(assemble(EL2_b1)))*100    
-        EL2_error2 = sqrt(abs(assemble(EL2_t2)) / abs(assemble(EL2_b2)))*100    
-        EL2_error3 = sqrt(abs(assemble(EL2_t3)) / abs(assemble(EL2_b3)))*100
+        EL2_t1 = inner(u4 - u_e1, u4 - u_e1) * dx4
+        EL2_t2 = inner(u4 - u_e2, u4 - u_e2) * dx4
+        EL2_t3 = inner(u4 - u_e3, u4 - u_e3) * dx4
+        EL2_b = inner(u4, u4) * dx4
+        EL2_error1 = sqrt(abs(assemble(EL2_t1)) / abs(assemble(EL2_b)))*100    
+        EL2_error2 = sqrt(abs(assemble(EL2_t2)) / abs(assemble(EL2_b)))*100    
+        EL2_error3 = sqrt(abs(assemble(EL2_t3)) / abs(assemble(EL2_b)))*100
         print(f"error L2: EL2_error1={EL2_error1}%, EL2_error2={EL2_error2}%, EL2_error3={EL2_error3}%")
 
-        EH1_t1 = inner(grad(u1 - u_e1), grad(u1 - u_e1)) * dx1
-        EH1_t2 = inner(grad(u2 - u_e2), grad(u2 - u_e2)) * dx2
-        EH1_t3 = inner(grad(u3 - u_e3), grad(u3 - u_e3)) * dx3
-        EH1_b1 = inner(grad(u1), grad(u1)) * dx1
-        EH1_b2 = inner(grad(u2), grad(u2)) * dx2
-        EH1_b3 = inner(grad(u3), grad(u3)) * dx3
-        EH1_error1 = sqrt(abs(assemble(EH1_t1)) / abs(assemble(EH1_b1)))*100    
-        EH1_error2 = sqrt(abs(assemble(EH1_t2)) / abs(assemble(EH1_b2)))*100    
-        EH1_error3 = sqrt(abs(assemble(EH1_t3)) / abs(assemble(EH1_b3)))*100
-        print(f"error H1: EH1_error1={EH1_error1}%, EH1_error2={EH1_error2}%, EH1_error3={EH1_error3}%")   
+        EH1_t1 = inner(grad(u4 - u_e1), grad(u4 - u_e1)) * dx4
+        EH1_t2 = inner(grad(u4 - u_e2), grad(u4 - u_e2)) * dx4
+        EH1_t3 = inner(grad(u4 - u_e3), grad(u4 - u_e3)) * dx4
+        EH1_b = inner(grad(u4), grad(u4)) * dx4
+        EH1_error1 = sqrt(abs(assemble(EH1_t1)) / abs(assemble(EH1_b)))*100    
+        EH1_error2 = sqrt(abs(assemble(EH1_t2)) / abs(assemble(EH1_b)))*100    
+        EH1_error3 = sqrt(abs(assemble(EH1_t3)) / abs(assemble(EH1_b)))*100
+        print(f"error H1: EH1_error1={EH1_error1}%, EH1_error2={EH1_error2}%, EH1_error3={EH1_error3}%") 
+        print()  
     cnt += 1
 
 
