@@ -1,8 +1,6 @@
 from dolfin import *
 
-
 mesh = UnitSquareMesh(3, 2) 
-V = FunctionSpace(mesh, "CG", 1)
 
 print("\nкоординаты всех средних точек ячеек")
 for i in range(mesh.num_cells()):
@@ -42,6 +40,8 @@ for vi in range(mesh.num_vertices()):
         print(f'нижняя граница: узел({xx}, {yy})')
 
 File("structured_mesh.pvd") << mesh
+
+V = FunctionSpace(mesh, "CG", 1)
 
 u = TrialFunction(V)
 v = TestFunction(V)
