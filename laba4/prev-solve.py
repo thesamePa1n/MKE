@@ -1,45 +1,6 @@
 from dolfin import *
 
-mesh = Mesh()
-editor = MeshEditor()
-editor.open(mesh, 'triangle', 2, 2)
-editor.init_vertices(12)
-editor.add_vertex(0, [0.0 , 0.0])
-editor.add_vertex(1, [0.3 , 0.0])
-editor.add_vertex(2, [0.67 , 0.0])
-editor.add_vertex(3, [1.0 , 0.0])
-
-editor.add_vertex(4, [0.0 , 0.5])
-editor.add_vertex(5, [0.3 , 0.5])
-editor.add_vertex(6, [0.67 , 0.5])
-editor.add_vertex(7, [1.0 , 0.5])
-
-editor.add_vertex(8, [0.0 , 1.0])
-editor.add_vertex(9, [0.3 , 1.0])
-editor.add_vertex(10, [0.67 , 1.0])
-editor.add_vertex(11, [1.0 , 1.0])
-
-editor.init_cells(12)
-
-editor.add_cell(0, [0, 1, 5]) 
-editor.add_cell(1, [0, 5, 4])
-
-editor.add_cell(2, [1, 2, 6])
-editor.add_cell(3, [1, 6, 5])
-
-editor.add_cell(4, [2, 3, 7])
-editor.add_cell(5, [2, 7, 6])
-
-editor.add_cell(6, [4, 5, 9])
-editor.add_cell(7, [4, 9, 8])
-
-editor.add_cell(8, [5, 6, 10])
-editor.add_cell(9, [5, 10, 9])
-
-editor.add_cell(10, [6, 7, 11])
-editor.add_cell(11, [6, 11, 10])
-
-editor.close()
+mesh = UnitSquareMesh(3, 2) 
 
 print("\nкоординаты всех средних точек ячеек")
 for i in range(mesh.num_cells()):
@@ -78,7 +39,7 @@ for vi in range(mesh.num_vertices()):
     elif yy < DOLFIN_EPS:
         print(f'нижняя граница: узел({xx}, {yy})')
 
-File("/mnt/c/Users/Vasya/Downloads/structured_mesh.pvd") << mesh
+File("structured_mesh.pvd") << mesh
 
 V = FunctionSpace(mesh, "CG", 1)
 
@@ -100,7 +61,7 @@ L = f * v * dx
 u = Function(V)
 
 solve(a == L, u, bc)
-File("/mnt/c/Users/Vasya/Downloads/solution.pvd") << u
+File("solution.pvd") << u
 
 vert_to_dof = vertex_to_dof_map(V)
 u_array = u.vector().get_local()
