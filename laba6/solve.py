@@ -15,15 +15,14 @@ ds = Measure('ds', domain=mesh, subdomain_data=boundaries)
 f = Constant(1.0)
 k = Constant(7.0)
 
-bc_1 = DirichletBC(V, Constant(0.0), boundaries, 1)
-bc_2 = DirichletBC(V, Constant(0.0), boundaries, 2)
-bcs = [bc_1, bc_2]
+bc = DirichletBC(V, Constant(5.0), boundaries, 1)
+bcs = [bc]
 
 u = TrialFunction(V) 
 v = TestFunction(V)
 
 a = k * inner(grad(u), grad(v)) * dx
-L = f * v * dx
+L = f * v * dx - v*ds
 
 u = Function(V)
 U = u.vector()
