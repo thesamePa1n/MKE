@@ -26,8 +26,8 @@ ds = Measure('ds')(domain=mesh, subdomain_data=boundaries)
 
 bc = DirichletBC(W.sub(0), g2, boundaries, 2)
 
-a = inner(kinv*q, r)*dx - div(r)*u*dx + div(q)*v*dx
-L = f * v * dx - g1*inner(r,n)*ds(1)
+a = inner(kinv*q, r)*dx + div(r)*u*dx + div(q)*v*dx
+L = f * v * dx + g1*inner(r, n)*ds(1)
 
 w = Function(W)
 solve(a == L, w, bc) 
