@@ -1,20 +1,16 @@
 from dolfin import * 
 
-mesh = Mesh('mesh2.xml')
-boundaries = MeshFunction('size_t', mesh, 'mesh2_facet_region.xml')
+mesh = Mesh('mesh.xml')
+boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml')
 
 f = Constant(1.0)
 kinv = Constant(1.0)
 g = Constant(0.0)
+r_coeff = Constant(0.1)
 
-# V = VectorFunctionSpace(mesh, 'CG', 2)
-# P = FunctionSpace(mesh, 'CG', 1)
-# W = V*P
-
-V = VectorElement("CG", mesh.ufl_cell(), 2) 
-P = FiniteElement("CG", mesh.ufl_cell(), 1) 
-WE = MixedElement([V, P])                    
-W = FunctionSpace(mesh, WE)  
+V = VectorFunctionSpace(mesh, 'CG', 2)
+P = FunctionSpace(mesh, 'CG', 1)
+W = MixedFunctionSpace(V, P)
 
 (q, u) = TrialFunctions(W)
 (r, v) = TestFunctions(W)
@@ -23,10 +19,10 @@ n = FacetNormal(mesh)
 
 ds = Measure('ds')(domain=mesh, subdomain_data=boundaries)
 
-bc = DirichletBC(W.sub(0), g, boundaries, 2)
+bc = DirichletBC(W.sub_space(1), g, boundaries, 1)
 
-a = inner(kinv*q, r)*dx + div(r)*u*dx + div(q)*v*dx
-L = f * v * dx + g*inner(r, n)*ds(1)
+a = inner(kinv*q, r)*dx + div(r)*u*dx + div(q)*v*dx + r_coeff*u*v*dx
+L = f * v * dx + 0.1*inner(r, n)*ds(2)
 
 w = Function(W)
 solve(a == L, w, bc) 

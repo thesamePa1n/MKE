@@ -1,25 +1,14 @@
 from dolfin import * 
 
-N = 32
-mesh = UnitSquareMesh(N, N)
+mesh = Mesh('mesh.xml')
+boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml')
 
 k = Constant(1.0)
 f = Constant(1.0)
 g = Constant(0.0)
 r = Constant(0.1)
 
-class DirichletBoundary(SubDomain): 
-  def inside(self, x, on_boundary):
-	  return on_boundary and (x[0] > (1.0 - DOLFIN_EPS) or x[1] > (1.0 - DOLFIN_EPS))
-
-class RobinBoundary(SubDomain): 
-	def inside(self, x, on_boundary): 
-		return on_boundary and (x[0] < DOLFIN_EPS or x[1] < DOLFIN_EPS)
-
 V = FunctionSpace(mesh, 'Lagrange', 1) 
-boundaries = MeshFunction("size_t", mesh, 1)
-RobinBoundary().mark(boundaries, 2) 
-DirichletBoundary().mark(boundaries, 1) 
 
 ds = Measure('ds')(domain=mesh, subdomain_data=boundaries)
 
