@@ -2,7 +2,6 @@ from dolfin import *
 import numpy
 
 mesh = Mesh('mesh.xml') 
-domains = MeshFunction('size_t', mesh, 'mesh_physical_region.xml') 
 boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml') 
 
 def D(u):
@@ -10,7 +9,7 @@ def D(u):
 
 f = Constant(0.0)
 k = Expression("1 + pow(x[0], 2) + 2*pow(x[1], 2)", degree=2)
-r = 0.2
+r = Constant(0.2)
 
 V = FunctionSpace(mesh, 'Lagrange', 1) 
 u = TrialFunction(V) 
