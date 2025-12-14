@@ -8,8 +8,8 @@ kinv = Constant(1.0)
 g = Constant(0.0)
 r_coeff = Constant(0.1)
 
-V = VectorFunctionSpace(mesh, 'CG', 2)
-P = FunctionSpace(mesh, 'CG', 1)
+V = FunctionSpace(mesh, "RT", 1)     # q
+P = FunctionSpace(mesh, "DG", 0)     # u
 W = MixedFunctionSpace(V, P)
 
 (q, u) = TrialFunctions(W)
@@ -25,7 +25,7 @@ a = inner(kinv*q, r)*dx + div(r)*u*dx + div(q)*v*dx + r_coeff*u*v*dx
 L = f * v * dx + 0.1*inner(r, n)*ds(2)
 
 w = Function(W)
-solve(a == L, w, bc) 
+solve(a == L, w, bc, solver_parameters={"linear_solver": "lu"}) 
 
 (q, u) = w.split()
 

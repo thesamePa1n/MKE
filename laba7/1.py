@@ -8,7 +8,7 @@ f = Constant(1.0)
 g = Constant(0.0)
 r = Constant(0.1)
 
-V = FunctionSpace(mesh, 'Lagrange', 1) 
+V = FunctionSpace(mesh, 'DG', 1) 
 
 ds = Measure('ds')(domain=mesh, subdomain_data=boundaries)
 
