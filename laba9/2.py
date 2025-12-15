@@ -1,0 +1,67 @@
+from dolfin import *
+import numpy
+
+parameters["reorder_dofs_serial"] = False
+
+N = 5
+mesh = UnitIntervalMesh(N)
+k = 50.0
+r = 3.0
+f = 1.0
+Nc = mesh.num_cells()
+NN = mesh.num_vertices()
+AA = numpy.zeros((NN, NN)) 
+FF = numpy.zeros(NN)
+
+for ci in range(Nc):
+  cell = Cell(mesh, ci)
+  vertices = cell.entities(0)
+  vert0 = Vertex(mesh, vertices[0])
+  vert1 = Vertex(mesh, vertices[1])
+  h = abs(vert0.point().x() - vert1.point().x())
+  dof0 = vertices[0]
+  dof1 = vertices[1]
+  AA[dof0][dof0] += 1.0 / h * k + h / 6 * 2 * r
+  AA[dof1][dof0] += -1.0/ h * k + h/6*r
+  AA[dof0][dof1] += -1.0/ h * k + h/6*r
+  AA[dof1][dof1] += 1.0 / h * k + h / 6 * 2 * r
+  
+  FF[dof0] += f * h / 2
+  FF[dof1] += f * h / 2
+  
+AA[0, :] = 0
+AA[:, 0] = 0
+AA[-1, :] = 0
+AA[:, -1] = 0
+AA[0, 0] = 1.0
+AA[-1, -1] = 1.0
+FF[0] = 0.0
+FF[-1] = 0.0
+
+U = numpy.linalg.solve(AA, FF)
+print(U)
+
+V = FunctionSpace(mesh, "CG", 1)
+u = TrialFunction(V)
+v = TestFunction(V)
+kk = Constant(k)
+rr = Constant(r)
+ff = Constant(f)
+a = inner(kk * grad(u), grad(v)) * dx + rr * u * v * dx
+L = f * v * dx
+
+def left_boundary(x, on_boundary):
+    return on_boundary and x[0] < DOLFIN_EPS
+
+def right_boundary(x, on_boundary):
+    return on_boundary and x[0] > 1.0 - DOLFIN_EPS
+
+bc_left = DirichletBC(V, Constant(0.0), left_boundary)
+bc_right = DirichletBC(V, Constant(0.0), right_boundary)
+
+bcs = [bc_left, bc_right]
+
+u = Function(V)
+solve(a == L, u, bcs)
+
+print(u.vector().get_local())
