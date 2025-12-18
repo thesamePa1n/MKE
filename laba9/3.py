@@ -5,7 +5,7 @@ parameters["reorder_dofs_serial"] = False
 
 N = 2
 mesh = UnitSquareMesh(N, N)
-k = 50
+k = 80.0
 Nc = mesh.num_cells()
 NN = mesh.num_vertices()
 

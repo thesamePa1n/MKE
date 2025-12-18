@@ -39,6 +39,7 @@ FF[0] = 0.0
 FF[-1] = 0.0
 
 U = numpy.linalg.solve(AA, FF)
+print("Our solve")
 print(U)
 
 V = FunctionSpace(mesh, "CG", 1)
@@ -59,9 +60,15 @@ def right_boundary(x, on_boundary):
 bc_left = DirichletBC(V, Constant(0.0), left_boundary)
 bc_right = DirichletBC(V, Constant(0.0), right_boundary)
 
-bcs = [bc_left, bc_right]
+A = Matrix()
+b = Vector()
+assemble(a, A)
+assemble(L, b)
+bc_left.apply(A, b)
+bc_right.apply(A, b)
 
 u = Function(V)
-solve(a == L, u, bcs)
+solve(A, u.vector(), b)
 
+print('Fenics solve')
 print(u.vector().get_local())
