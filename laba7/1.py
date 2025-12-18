@@ -2,6 +2,9 @@ from dolfin import *
 
 mesh = Mesh('mesh.xml')
 boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml')
+domains = MeshFunction('size_t', mesh, 'mesh_physical_region.xml')
+ds = Measure('ds', domain=mesh, subdomain_data=boundaries)
+dx = Measure('dx', domain=mesh, subdomain_data=domains)
 
 k = Constant(1.0)
 f = Constant(1.0)
@@ -9,8 +12,6 @@ g = Constant(0.0)
 r = Constant(0.1)
 
 V = FunctionSpace(mesh, 'DG', 1) 
-
-ds = Measure('ds')(domain=mesh, subdomain_data=boundaries)
 
 u = TrialFunction(V) 
 v = TestFunction(V) 
@@ -28,7 +29,7 @@ a = inner(k*grad(u), grad(v)) * dx + r*u*v*dx\
   - inner(k*grad(v), u*n)*ds(1) \
   - inner(v*n, k*grad(u))*ds(1) \
   + k*(gamma/h)*u*v*ds(1) + u*v*ds(2)
-L = f*v*dx - g*inner(k*grad(v), n)*ds(1) + k*(gamma/h)*g*v*ds(1) + 0.1*v*ds(2)
+L = f*v*dx - g*inner(k*grad(v), n)*ds(1) + k*(gamma/h)*g*v*ds(1) + Constant(0.1)*v*ds(2)
 
 u = Function(V)
 solve(a == L, u) 

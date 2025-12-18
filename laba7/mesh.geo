@@ -64,19 +64,12 @@ Circle(29) = {18, 15, 17};
 Circle(30) = {17, 15, 16};
 Circle(31) = {16, 15, 19};
 
-Line Loop(1) = {1, 2, 3, 4};
-Line Loop(2) = {20, 21, 22, 23};
-Line Loop(3) = {24, 25, 26, 27};
-Line Loop(4) = {28, 29, 30, 31};
+Curve Loop(1) = {1, 2, 3, 4};
+Curve Loop(2) = {28, -31, -30, -29};
+Curve Loop(3) = {27, -25, -24, 26};
+Curve Loop(4) = {20, 21, 22, 23};
 
 Plane Surface(1) = {1, 2, 3, 4};
-Plane Surface(2) = {2};
-Plane Surface(3) = {3};
-Plane Surface(4) = {4};
-
-//+
-Physical Curve(1) = {1, 2, 4, 3};
-//+
-Physical Curve(2) = {20, 23, 22, 21, 26, 24, 27, 25, 28, 31, 29, 30};
-//+
-Physical Surface(1) = {1, 2, 4};
+Physical Curve(1) = {1, 2, 3, 4};
+Physical Curve(2) = {21, 20, 23, 22, 26, 27, 25, 24, 28, 29, 30, 31};
+Physical Surface(1) = {1};
