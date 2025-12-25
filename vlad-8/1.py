@@ -1,7 +1,7 @@
 from dolfin import * 
 import numpy
 
-mesh = Mesh('1.xml') 
+mesh = Mesh('mesh.xml') 
 boundaries = MeshFunction('size_t', mesh, 'mesh_facet_region.xml') 
 domains = MeshFunction('size_t', mesh, 'mesh_physical_region.xml')
 ds = Measure('ds', domain=mesh, subdomain_data=boundaries)
