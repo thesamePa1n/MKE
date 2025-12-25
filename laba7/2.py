@@ -22,7 +22,7 @@ n = FacetNormal(mesh)
 
 bc = DirichletBC(W.sub(1), g, boundaries, 2)
 
-a = inner(kinv*q, r)*dx - div(r)*u*dx + div(q)*v*dx + r_coeff*u*v*dx + inner(q, n)*inner(r, n)*ds(2)
+a = inner(kinv*q, r)*dx - div(r)*u*dx + div(q)*v*dx  + inner(q, n)*inner(r, n)*ds(2)
 L = f * v * dx - g*inner(r, n)*ds(1) - Constant(0.1)*inner(r, n)*ds(2)
 
 w = Function(W)

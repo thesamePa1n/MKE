@@ -3,7 +3,7 @@ import numpy
 
 parameters["reorder_dofs_serial"] = False
 
-N = 5
+N = 2
 mesh = UnitIntervalMesh(N)
 k = 0.7
 q = 9.0
@@ -17,6 +17,7 @@ for ci in range(Nc):
   vert0 = Vertex(mesh, vertices[0])
   vert1 = Vertex(mesh, vertices[1])
   h = abs(vert0.point().x() - vert1.point().x())
+  print(h)
   dof0 = vertices[0]
   dof1 = vertices[1]
   AA[dof0][dof0] += 1.0 / h * k + h / 6 * 2 * q
